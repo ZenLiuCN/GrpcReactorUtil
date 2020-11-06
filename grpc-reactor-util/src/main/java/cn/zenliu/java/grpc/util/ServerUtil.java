@@ -1,14 +1,10 @@
 package cn.zenliu.java.grpc.util;
 
-import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
-
-import static cn.zenliu.java.grpc.util.Components.whenNotCancel;
 
 /**
  * @author Zen.Liu
@@ -24,7 +20,7 @@ public interface ServerUtil {
         try {
             processor.apply(Mono.just(req))
                     .subscribe(
-                            value -> whenNotCancel(observer, o -> o.onNext(value)),
+                            value -> Components.whenNotCancel(observer, o -> o.onNext(value)),
                             observer::onError,
                             observer::onCompleted);
         } catch (Throwable throwable) {
@@ -41,7 +37,7 @@ public interface ServerUtil {
         try {
             processor.apply(Mono.just(req))
                     .subscribe(
-                            value -> whenNotCancel(observer, o -> o.onNext(value)),
+                            value -> Components.whenNotCancel(observer, o -> o.onNext(value)),
                             observer::onError,
                             observer::onCompleted);
         } catch (Throwable throwable) {
@@ -57,7 +53,7 @@ public interface ServerUtil {
         try {
             processor.apply(reqObserver.asFlux())
                     .subscribe(
-                            value -> whenNotCancel(observer, o -> o.onNext(value)),
+                            value -> Components.whenNotCancel(observer, o -> o.onNext(value)),
                             observer::onError,
                             observer::onCompleted);
         } catch (Throwable throwable) {
@@ -65,6 +61,7 @@ public interface ServerUtil {
         }
         return reqObserver;
     }
+
     static <REQ, RES> StreamObserver<REQ> manyToMany(
             StreamObserver<RES> observer,
             Function<Flux<REQ>, Flux<RES>> processor
@@ -73,7 +70,7 @@ public interface ServerUtil {
         try {
             processor.apply(reqObserver.asFlux())
                     .subscribe(
-                            value -> whenNotCancel(observer, o -> o.onNext(value)),
+                            value -> Components.whenNotCancel(observer, o -> o.onNext(value)),
                             observer::onError,
                             observer::onCompleted);
         } catch (Throwable throwable) {
