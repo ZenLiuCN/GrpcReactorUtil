@@ -8,6 +8,7 @@
         <module>component</module>
         <module>component-old</module>
         <module>grpc-reactor-util</module>
+        <module>sample-with-test</module>
     </modules>
 
     <properties>
